@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.env
+
+# Django
+*.log
+db.sqlite3
+
+# Docker
+*.pid
+*.db
+
+# Pytest
+.pytest_cache/
+
+# IDEs
+.vscode/
+.idea/
