@@ -9,7 +9,7 @@ TESTING = os.getenv('TESTING', 'False') == 'True'
 
 
 # Chave e Debug
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = config('SECRET_KEY', default='unsafe-secret-key-for-testing')
 DEBUG = True
 
 ALLOWED_HOSTS = []
