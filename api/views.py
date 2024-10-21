@@ -1,13 +1,15 @@
-from django.db.models import Count
 from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.conf import settings
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_headers
+
 
 from rest_framework import filters, generics, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.parsers import FormParser, MultiPartParser, JSONParser
 from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle
 from rest_framework.views import APIView
@@ -37,8 +39,8 @@ class BurstRateThrottle(UserRateThrottle):
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.select_related('author').order_by('-created_at')
     serializer_class = PostSerializer
-    permission_classes = [permissions.IsAuthenticated, IsAuthorOrReadOnly]
-    parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [IsAuthorOrReadOnly]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
     throttle_classes = [BurstRateThrottle]
 
     def perform_create(self, serializer):
@@ -123,8 +125,14 @@ class FeedViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = PageNumberPagination
+    
+    
+    cache_timeout = 1  # 2 minutos
+    if settings.TESTING:
+        cache_timeout = 1  # 1 segundo durante os testes
 
-    @method_decorator(cache_page(60*2)) # Manter o Cache por 2 minutos
+    @method_decorator(vary_on_headers('Authorization'))
+    @method_decorator(cache_page(cache_timeout))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 

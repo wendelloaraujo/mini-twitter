@@ -45,6 +45,7 @@ class UserSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
     is_liked = serializers.SerializerMethodField()
+    text = serializers.CharField(max_length=280, allow_blank=True)
 
     class Meta:
         model = Post
@@ -54,9 +55,8 @@ class PostSerializer(serializers.ModelSerializer):
 
     # Verificar se o texto não está vazio
     def validate_text(self, value):
-        if len(value) == 0:
-            raise serializers.ValidationError(
-                "O texto da postagem não pode ser vazio.")
+        if len(value.strip()) == 0:
+            raise serializers.ValidationError("O texto da postagem não pode ser vazio.")
         return value
 
     # Verificar se um post especifico foi curtido pelo usuário

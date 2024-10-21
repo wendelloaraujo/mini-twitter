@@ -39,5 +39,19 @@ services:
     depends_on:
       - redis
 
+  test:
+    build: .
+    command: pytest --cov=api --cov-report=term-missing --cov-report=html
+    environment:
+      - TESTING=True
+    volumes:
+      - .:/app
+      - ./htmlcov:/app/htmlcov
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+
 volumes:
   postgres_data:

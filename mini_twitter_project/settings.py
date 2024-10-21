@@ -2,9 +2,11 @@ import os
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
-import sys
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+TESTING = os.getenv('TESTING', 'False') == 'True'
+
 
 # Chave e Debug
 SECRET_KEY = config('SECRET_KEY')
