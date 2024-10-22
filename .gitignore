@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *.env
 
+# Python virtual environment
+venv/
+
 # Django
 *.log
 db.sqlite3
