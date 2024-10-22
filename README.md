@@ -156,7 +156,7 @@ This documentation allows you to see all available endpoints, methods, parameter
 
 ### 📌 Entity-Relationship Diagram (ERD)
 
-![ERD](diagrams/ERD.png)
+![ERD](diagrams/erd.png)
 
 **Description:** The ERD diagram represents the database schema, showing the entities (models) and their relationships. In the diagram, the UNIQUE constraint ensures that values in a column (or combination of columns) are unique, while the CHECK constraint ensures that the data meets specific conditions, such as preventing a user from following themselves.
 
