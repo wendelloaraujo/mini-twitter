@@ -63,7 +63,7 @@ class TestPostViewSet(TestCase):
         url = reverse('post-unlike', kwargs={'pk': post.id})
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['status'], 'Curtida removida')
+        self.assertEqual(response.data['status'], 'Like removed.')
         
     def test_like_post_already_liked(self):
         post = Post.objects.create(author=self.user, text='A post to like')
@@ -71,14 +71,14 @@ class TestPostViewSet(TestCase):
         url = reverse('post-like', kwargs={'pk': post.id})
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data['detail'], 'Você já curtiu esta postagem')
+        self.assertEqual(response.data['detail'], 'You have already liked this post.')
         
     def test_unlike_post_not_liked(self):
         post = Post.objects.create(author=self.user, text='A post to unlike')
         url = reverse('post-unlike', kwargs={'pk': post.id})
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data['detail'], 'Você não curtiu esta postagem.')
+        self.assertEqual(response.data['detail'], 'You have not liked this post.')
 
 class TestUserViewSet(TestCase):
     def setUp(self):
@@ -94,33 +94,33 @@ class TestUserViewSet(TestCase):
         url = reverse('user-follow', kwargs={'pk': self.user2.id})
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['status'], f'Você agora segue {self.user2.username}')
+        self.assertEqual(response.data['status'], f'You are now following {self.user2.username}')
 
     def test_unfollow_user(self):
         Follow.objects.create(follower=self.user1, following=self.user2)
         url = reverse('user-unfollow', kwargs={'pk': self.user2.id})
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['status'], f'Você deixou de seguir {self.user2.username}')
+        self.assertEqual(response.data['status'], f'You have unfollowed {self.user2.username}')
         
     def test_follow_self(self):
         url = reverse('user-follow', kwargs={'pk': self.user1.id})
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data['detail'], 'Você não pode seguir a si mesmo.')
+        self.assertEqual(response.data['detail'], 'You cannot follow yourself.')
 
     def test_unfollow_user_not_following(self):
         url = reverse('user-unfollow', kwargs={'pk': self.user2.id})
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data['detail'], 'Você não segue este usuário.')
+        self.assertEqual(response.data['detail'], 'You are not following this user.')
         
     def test_follow_user_already_following(self):
         Follow.objects.create(follower=self.user1, following=self.user2)
         url = reverse('user-follow', kwargs={'pk': self.user2.id})
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data['detail'], 'Você já segue este usuário.')
+        self.assertEqual(response.data['detail'], 'You are already following this user.')
 
 class TestFeedViewSet(TestCase):
     def setUp(self):
