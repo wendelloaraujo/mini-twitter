@@ -55,7 +55,7 @@ class TestPostViewSet(TestCase):
         url = reverse('post-like', kwargs={'pk': post.id})
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['status'], 'Postagem curtida')
+        self.assertEqual(response.data['status'], 'Post liked.')
         
     def test_unlike_post(self):
         post = Post.objects.create(author=self.user, text='A post to unlike')
