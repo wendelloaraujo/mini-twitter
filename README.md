@@ -1,3 +1,196 @@
+[🇺🇸 English Version](#english-version) | [🇧🇷 Versão em Português](#versão-em-português)
+
+## 🇺🇸 English Version
+
+# 🐦 Mini-Twitter API
+
+This project implements a RESTful API for a simple social media platform similar to Twitter. The API allows users to register, authenticate, post, like posts, follow other users, and view a feed with posts from followed users.
+
+## 📑 Table of Contents
+
+- [🛠️ Technologies Used](#-technologies-used)
+- [✨ Features](#-features)
+- [📋 Prerequisites](#-prerequisites)
+- [🚀 Setup and Execution](#-setup-and-execution)
+- [✅ Testing](#-testing)
+- [📄 API Documentation](#-api-documentation)
+- [📊 Diagrams](#-diagrams)
+- [🐳 Useful Docker Commands](#-useful-docker-commands)
+- [📧 Support](#-support)
+- [👤 Author](#-author)
+
+## 🛠️ Technologies Used
+
+- **Language:** Python 3.12.7
+- **Framework:** Django REST Framework
+- **Database:** PostgreSQL
+- **Authentication:** JWT (JSON Web Tokens)
+- **Cache:** Redis
+- **Asynchronous Queues:** Celery
+- **Containerization:** Docker and Docker Compose
+- **API Documentation:** Swagger
+- **Testing:** Pytest
+- **CI/CD:** GitHub Actions
+
+## ✨ Features
+
+- User registration and authentication using JWT
+- Follow and unfollow other users
+- Create, edit, and delete posts with text and images
+- Like and unlike posts
+- View a personalized feed with posts from followed users
+- Pagination of feed posts
+- Search for posts by keyword or username
+- User feed caching using Redis
+- Rate limiting to prevent excessive requests
+- Email notifications when following a user
+- Complete code coverage with Pytest
+- CI/CD pipeline with GitHub Actions
+- API documentation generated with Swagger
+
+## 📋 Prerequisites
+
+Before starting, make sure you have the following tools installed:
+
+- Docker
+- Docker Compose
+- Python 3.12.7
+
+## 🚀 Setup and Execution
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your_username/mini-twitter.git
+cd mini-twitter
+```
+
+### 2. Configure Environment Variables
+
+Create a `.env` file in the project root with the following variables:
+
+```env
+SECRET_KEY=your_secret_key
+DB_NAME=database_name
+DB_USER=database_user
+DB_PASSWORD=database_password
+DB_HOST=db
+DB_PORT=5432
+REDIS_HOST=redis
+EMAIL_HOST=smtp.example.com
+EMAIL_PORT=587
+EMAIL_HOST_USER=your_email@example.com
+EMAIL_HOST_PASSWORD=your_email_password
+EMAIL_USE_TLS=True
+DEFAULT_FROM_EMAIL=your_email@example.com
+```
+
+**Notes:**
+
+- **SECRET_KEY:** A secret key for your Django instance. You can generate one using online tools or Django commands.
+- **EMAIL\_\***: You can use an email service like **Mailtrap** for testing email sending in the development environment.
+
+### 3. Build and Start Containers
+
+In the terminal, run:
+
+```bash
+docker-compose up --build
+```
+
+This command will:
+
+- Build the required Docker images.
+- Start the services defined in `docker-compose.yml` (web, db, redis, celery).
+
+### 4. Apply Migrations and Create Superuser
+
+In a new terminal, run:
+
+```bash
+docker-compose exec web python manage.py migrate
+docker-compose exec web python manage.py createsuperuser
+```
+
+- **Migrate the Database:** Applies migrations to create the necessary tables in the database.
+- **Create Superuser:** Creates an admin user to access the Django admin panel.
+
+### 5. Access the Application
+
+- **API:** [http://localhost:8000/api/](http://localhost:8000/api/)
+- **Swagger Documentation:** [http://localhost:8000/swagger/](http://localhost:8000/swagger/)
+- **Django Admin:** [http://localhost:8000/admin/](http://localhost:8000/admin/) (if superuser was created)
+
+## ✅ Testing
+
+To run the tests with code coverage, use the `test` service defined in `docker-compose.yml`:
+
+```bash
+docker-compose run test
+```
+
+This command will:
+
+- Run the tests defined in the `api/tests/` folder using **pytest**.
+- Generate an HTML coverage report in the `htmlcov/` directory.
+
+### View Coverage Report
+
+You can open the `htmlcov/index.html` file in a browser to see the detailed report.
+
+```bash
+xdg-open htmlcov/index.html
+```
+
+**Note:** The command above works on Linux. On Windows or macOS, open the file manually or use the appropriate command.
+
+## 📄 API Documentation
+
+The API documentation is available via Swagger at:
+
+[http://localhost:8000/swagger/](http://localhost:8000/swagger/)
+
+This documentation allows you to see all available endpoints, methods, parameters, and data models. Through the Swagger interface, you can also test requests directly in the browser.
+
+## 📊 Diagrams
+
+### 📌 Entity-Relationship Diagram (ERD)
+
+![ERD](diagrams/ERD.png)
+
+**Description:** The ERD diagram represents the database schema, showing the entities (models) and their relationships.
+
+### 🖥️ Architecture Diagram
+
+![Architecture](diagrams/architecture.png)
+
+**Description:** The architecture diagram illustrates the main system components and how they interact, including client, API, database, cache, task queue, and CI/CD.
+
+## 📦 CI/CD
+
+The project uses **GitHub Actions** for continuous integration and continuous delivery (CI/CD). On each push or pull request to the `main` or `master` branches, automated tests run to ensure code integrity.
+
+The GitHub Actions workflow is defined in the `.github/workflows/ci.yml` file.
+
+## 🐳 Useful Docker Commands
+
+- To restart the project: `docker-compose restart`
+- To stop the services: `docker-compose down`
+- To access the Django container: `docker-compose exec web bash`
+
+## 📧 Support
+
+For any questions or issues, contact [wendell.cmd@gmail.com](mailto:wendell.cmd@gmail.com).
+
+## 👤 Author
+
+- **Wendell Araújo** - [LinkedIn](https://www.linkedin.com/in/wendelloaraujo/) - wendell.cmd@gmail.com
+
+---
+
+[🇺🇸 English Version](#english-version) | [🇧🇷 Versão em Português](#versão-em-português)
+## 🇧🇷 Versão em Português
+
 # 🐦 Mini-Twitter API
 
 Este projeto implementa uma API RESTful para uma plataforma de mídia social simples, semelhante ao Twitter. A API permite que os usuários registrem-se, autentiquem-se, publiquem, curtam postagens, sigam outros usuários e vejam um feed com postagens de usuários que seguem.
@@ -99,7 +292,7 @@ Este comando irá:
 - Construir as imagens Docker necessárias.
 - Iniciar os serviços definidos no `docker-compose.yml` (web, db, redis, celery).
 
-### 4. Aplicar Migrações e Criar Superusuário (Opcional)
+### 4. Aplicar Migrações e Criar Superusuário
 
 Em um novo terminal, execute:
 
