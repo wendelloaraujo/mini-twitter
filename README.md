@@ -1,4 +1,4 @@
-[🇺🇸 English Version](#english-version) | [🇧🇷 Versão em Português](#versão-em-português)
+[🇺🇸 English Version](#-english-version) | [🇧🇷 Versão em Português](#-versão-em-português)
 
 ## 🇺🇸 English Version
 
@@ -158,7 +158,7 @@ This documentation allows you to see all available endpoints, methods, parameter
 
 ![ERD](diagrams/ERD.png)
 
-**Description:** The ERD diagram represents the database schema, showing the entities (models) and their relationships.
+**Description:** The ERD diagram represents the database schema, showing the entities (models) and their relationships. In the diagram, the UNIQUE constraint ensures that values in a column (or combination of columns) are unique, while the CHECK constraint ensures that the data meets specific conditions, such as preventing a user from following themselves.
 
 ### 🖥️ Architecture Diagram
 
@@ -347,7 +347,7 @@ Nesta documentação, você pode visualizar todos os endpoints disponíveis, seu
 
 ![ERD](diagrams/erd.png)
 
-**Descrição:** O diagrama ERD representa o esquema do banco de dados, mostrando as entidades (modelos) e os relacionamentos entre elas.
+**Descrição:** O diagrama ERD representa o esquema do banco de dados, mostrando as entidades (modelos) e os relacionamentos entre elas. No diagrama, a restrição UNIQUE garante que valores em uma coluna (ou combinação de colunas) sejam únicos, enquanto a restrição CHECK assegura que os dados atendam a condições específicas, como impedir que um usuário siga a si mesmo.
 
 ### 🖥️ Diagrama de Arquitetura
 

@@ -7,8 +7,6 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 TESTING = os.getenv('TESTING', 'False') == 'True'
 
-
-# Chave e Debug
 SECRET_KEY = config('SECRET_KEY', default='unsafe-secret-key-for-testing')
 DEBUG = True
 
@@ -21,13 +19,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # apps do projeto
+    # Project apps
     'api',
     'rest_framework',
-    'drf_yasg', # Documentação com Swagger
+    'drf_yasg', # Documentation with Swagger
 ]
 
-# Configurações do Django REST Framework
+# Django REST Framework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -36,23 +34,23 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10, # total de itens em cada página
+    'PAGE_SIZE': 10, # # Total items per page
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.UserRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'user': '1000/day',  # Limitando o total de solicitações por dia por usuário
+        'user': '1000/day',  # Limiting total requests per day per user
     }
 }
 
-# Configurações do JWT
+# JWT settings
 SIMPLE_JWT = {
-    'ACESS_TOKEN_LIFETIME': timedelta(minutes=5), # Validade do token de acesso
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1), # Validade do token de atualização
+    'ACESS_TOKEN_LIFETIME': timedelta(minutes=5), # Access token validity
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1), # Refresh token validity
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-# Configurações de email
+# Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config('EMAIL_HOST', default='localhost')
 EMAIL_PORT = config('EMAIL_PORT', cast=int, default=25)
@@ -91,7 +89,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mini_twitter_project.wsgi.application'
 
-# Configurações do banco de dados
+# Database settings
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -103,7 +101,7 @@ DATABASES = {
     }
 }
 
-# Configurações do cache usando Redis
+# Cache settings using Redis
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -114,11 +112,11 @@ CACHES = {
     }
 }
 
-# Configurações do Celery
+# Celery settings
 CELERY_BROKER_URL = f"redis://{config('REDIS_HOST', default='redis')}:6379/0"
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 
-# Configurações de mídia
+# Media settings
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 

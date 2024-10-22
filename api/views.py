@@ -5,7 +5,6 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
 
-
 from rest_framework import filters, generics, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -19,23 +18,23 @@ from .permissions import IsAuthorOrReadOnly
 from .tasks import send_follow_notification
 from .serializers import PostSerializer, UserRegistrationSerializer, UserSerializer
 
-# View para registro de usuários
+# View for user registration
 class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
     permission_classes = []
 
-# Endpoint de teste para verificar autenticação
+# Test endpoint to check authentication
 class HelloWorldView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         return Response({'message': 'Hello, World!'})
 
-# controle de taxa de requisições
+# Request rate control
 class BurstRateThrottle(UserRateThrottle):
-    rate = '5/minute' # Limitar a 5 requisições por minuto
+    rate = '5/minute' # Limit to 5 requests per minute
 
-# ViewSet para posts
+# ViewSet for posts
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.select_related('author').order_by('-created_at')
     serializer_class = PostSerializer
@@ -45,7 +44,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-        # Invalida o cache quando uma nova postagem é criada
+        # Invalidate cache when a new post is created
         cache_pattern = f'feed_{self.request.user.id}_page_*'
         self.invalidate_user_feed_cache(cache_pattern)
 
@@ -53,17 +52,17 @@ class PostViewSet(viewsets.ModelViewSet):
         keys = cache.keys(pattern)
         cache.delete_many(keys)
 
-    # Curtir Posts
+    # Like posts
     @action(detail=True, methods=['post'])
     def like(self, request, pk=None):
         post = self.get_object()
         user = request.user
         if Like.objects.filter(user=user, post=post).exists():
-            return Response({'detail': 'Você já curtiu esta postagem'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'You have already liked this post.'}, status=status.HTTP_400_BAD_REQUEST)
         Like.objects.create(user=user, post=post)
-        return Response({'status': 'Postagem curtida'})
+        return Response({'status': 'Post liked.'})
 
-    # Remover curtida
+    # Remove like
     @action(detail=True, methods=['post'])
     def unlike(self, request, pk=None):
         post = self.get_object()
@@ -71,10 +70,10 @@ class PostViewSet(viewsets.ModelViewSet):
         like = Like.objects.filter(user=user, post=post).first()
         if like:
             like.delete()
-            return Response({'status': 'Curtida removida'})
-        return Response({'detail': 'Você não curtiu esta postagem.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'status': 'Like removed.'})
+        return Response({'detail': 'You have not liked this post.'}, status=status.HTTP_400_BAD_REQUEST)
 
-# ViewSet para pesquisa de posts
+# ViewSet for post search
 class PostSearchViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Post.objects.select_related('author').order_by('-created_at')
     serializer_class = PostSerializer
@@ -83,28 +82,28 @@ class PostSearchViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ['text', 'author__username']
 
-# ViewSet para usuários
+# ViewSet for users
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.prefetch_related('followers', 'following')
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    # Seguir usuário
+    # Follow user
     @action(detail=True, methods=['post'])
     def follow(self, request, pk=None):
         user_to_follow = self.get_object()
         user = request.user
         if user == user_to_follow:
-            return Response({'detail': 'Você não pode seguir a si mesmo.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'You cannot follow yourself.'}, status=status.HTTP_400_BAD_REQUEST)
         if Follow.objects.filter(follower=user, following=user_to_follow).exists():
-            return Response({'detail': 'Você já segue este usuário.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'You are already following this user.'}, status=status.HTTP_400_BAD_REQUEST)
         Follow.objects.create(follower=user, following=user_to_follow)
-        send_follow_notification.delay(user.id, user_to_follow.id) # Enviar email de notificação
+        send_follow_notification.delay(user.id, user_to_follow.id) # Send notification email
         cache_pattern = f'feed_{request.user.id}_page_*'
-        self.invalidate_user_feed_cache(cache_pattern)  # Invalida o cache quando seguir alguém
-        return Response({'status': f'Você agora segue {user_to_follow.username}'})
+        self.invalidate_user_feed_cache(cache_pattern)  # Invalidate cache when following someone
+        return Response({'status': f'You are now following {user_to_follow.username}'})
 
-    # Deixar de Seguir um usuário
+    # Unfollow a user
     @action(detail=True, methods=['post'])
     def unfollow(self, request, pk=None):
         user_to_unfollow = self.get_object()
@@ -113,23 +112,23 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             follower=user, following=user_to_unfollow).first()
         if follow:
             follow.delete()
-            return Response({'status': f'Você deixou de seguir {user_to_unfollow.username}'})
-        return Response({'detail': 'Você não segue este usuário.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'status': f'You have unfollowed {user_to_unfollow.username}'})
+        return Response({'detail': 'You are not following this user.'}, status=status.HTTP_400_BAD_REQUEST)
 
     def invalidate_user_feed_cache(self, pattern):
         keys = cache.keys(pattern)
         cache.delete_many(keys)
 
-# ViewSet para o feed de posts
+# ViewSet for the post feed
 class FeedViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = PageNumberPagination
     
     
-    cache_timeout = 1  # 2 minutos
+    cache_timeout = 1  # 2 minutes
     if settings.TESTING:
-        cache_timeout = 1  # 1 segundo durante os testes
+        cache_timeout = 1  # 1 second during testing
 
     @method_decorator(vary_on_headers('Authorization'))
     @method_decorator(cache_page(cache_timeout))

@@ -3,8 +3,8 @@ from django.contrib.auth.models import User
 from django.core import mail
 from api.tasks import send_follow_notification
 
+# The method names represent what is being tested.
 class TestTasks(TestCase):
-
     def setUp(self):
         self.user1 = User.objects.create_user(username='user1', email='user1@test.com')
         self.user2 = User.objects.create_user(username='user2', email='user2@test.com')

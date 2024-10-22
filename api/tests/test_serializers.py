@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from api.serializers import UserRegistrationSerializer, PostSerializer, UserSerializer
 from django.contrib.auth.models import AnonymousUser
 
+# The method names represent what is being tested.
 class TestUserRegistrationSerializer(TestCase):
     def test_valid_data(self):
         data = {
@@ -24,7 +25,7 @@ class TestPostSerializer(TestCase):
         self.request = self.factory.get('/')
         self.request.user = self.user
         self.post = Post.objects.create(author=self.user, text="Test Post")
-        # Criar uma curtida para testar o campo is_liked
+        # Create a like to test the is_liked field
         Like.objects.create(user=self.user, post=self.post)
 
     def test_valid_data(self):
@@ -50,8 +51,8 @@ class TestPostSerializer(TestCase):
         self.assertTrue(data['is_liked'])
         self.assertEqual(data['likes_count'], 1)
 
+    # Remove the created like from the post
     def test_post_serializer_not_liked(self):
-        # Remover a curtida criada do post
         Like.objects.filter(user=self.user, post=self.post).delete()
         self.post.refresh_from_db()
         serializer = PostSerializer(self.post, context={'request': self.request})
@@ -59,8 +60,8 @@ class TestPostSerializer(TestCase):
         self.assertFalse(data['is_liked'])
         self.assertEqual(data['likes_count'], 0)
 
+    # Unauthenticated user
     def test_post_serializer_unauthenticated(self):
-        # User não autenticado
         request = self.factory.get('/')
         request.user = AnonymousUser()
         serializer = PostSerializer(self.post, context={'request': request})
@@ -77,7 +78,7 @@ class TestPostSerializer(TestCase):
         serializer = PostSerializer(data=data)
         self.assertFalse(serializer.is_valid())
         self.assertIn('text', serializer.errors)
-        self.assertEqual(serializer.errors['text'][0], 'O texto da postagem não pode ser vazio.')
+        self.assertEqual(serializer.errors['text'][0], 'The post text cannot be empty.')
         
 class TestUserSerializer(TestCase):
 
@@ -96,14 +97,12 @@ class TestUserSerializer(TestCase):
         self.assertEqual(data['following_count'], 0)
 
     def test_user_serializer_is_following(self):
-        # Cobrir linha 42: usuário está seguindo
         Follow.objects.create(follower=self.user, following=self.user_to_serialize)
         serializer = UserSerializer(self.user_to_serialize, context={'request': self.request})
         data = serializer.data
         self.assertTrue(data['is_following'])
 
     def test_user_serializer_unauthenticated(self):
-        # User não autenticado
         request = self.factory.get('/')
         request.user = AnonymousUser()
         serializer = UserSerializer(self.user_to_serialize, context={'request': request})
