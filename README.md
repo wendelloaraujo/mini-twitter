@@ -145,6 +145,7 @@ xdg-open htmlcov/index.html
 **Note:** The command above works on Linux. On Windows or macOS, open the file manually or use the appropriate command.
 
 Test coverage:
+
 ![test-coverage](diagrams/test-coverage.png)
 
 ## 📄 API Documentation
@@ -337,6 +338,7 @@ xdg-open htmlcov/index.html
 **Nota:** O comando acima funciona no Linux. No Windows ou macOS, abra o arquivo manualmente ou use o comando apropriado.
 
 Cobertura dos testes:
+
 ![cobertura-dos-testes](diagrams/test-coverage.png)
 
 ## 📄 Documentação da API
