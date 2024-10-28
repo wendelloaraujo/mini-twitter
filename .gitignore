@@ -20,3 +20,10 @@ db.sqlite3
 # IDEs
 .vscode/
 .idea/
+
+#Arquivo de Chave
+*.pem
+
+# Diretórios estáticos e de mídia
+/staticfiles/
+/media/

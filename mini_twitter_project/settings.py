@@ -10,7 +10,7 @@ TESTING = os.getenv('TESTING', 'False') == 'True'
 SECRET_KEY = config('SECRET_KEY', default='unsafe-secret-key-for-testing')
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '15.229.5.59', 'mini-twitter-wendell.duckdns.org']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -143,6 +143,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = 'static/'
-
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
